@@ -1,0 +1,405 @@
+{
+	"info": {
+		"_postman_id": "4499e0b8-c04f-4212-bb2e-ffc9a4a69d0c",
+		"name": "APIAssessmentTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createBookingWithInvalidHttpMethod",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check Status Code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check response Length\" , function()\r",
+							"{\r",
+							"    var data = JSON.parse(responseBody); \r",
+							"    pm.expect(data).have.length.greaterThan(0)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set('randomNumber', Math.floor(Math.random() * 2000));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : {{randomNumber}},\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}booking",
+					"host": [
+						"{{baseUrl}}booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createBookingWithValidData",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Check Response Code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//Response Validation\r",
+							"pm.test(\"Check Booking ID\", function () {\r",
+							"    var responseData = pm.response.json();\r",
+							"    pm.expect(responseData.bookingid).to.be.a('number')\r",
+							"    pm.expect(responseData.bookingid).to.not.be.null\r",
+							"});\r",
+							"\r",
+							"//Schema Validation\r",
+							" const schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"default\": {},\r",
+							"    \"title\": \"Root Schema\",\r",
+							"    \"required\": [\r",
+							"        \"bookingid\",\r",
+							"        \"booking\"\r",
+							"    ],\r",
+							"    \"properties\": {\r",
+							"        \"bookingid\": {\r",
+							"            \"type\": \"integer\",\r",
+							"            \"default\": 0,\r",
+							"            \"title\": \"The bookingid Schema\",\r",
+							"            \"examples\": [\r",
+							"                4793\r",
+							"            ]\r",
+							"        },\r",
+							"        \"booking\": {\r",
+							"            \"type\": \"object\",\r",
+							"            \"default\": {},\r",
+							"            \"title\": \"The booking Schema\",\r",
+							"            \"required\": [\r",
+							"                \"firstname\",\r",
+							"                \"lastname\",\r",
+							"                \"totalprice\",\r",
+							"                \"depositpaid\",\r",
+							"                \"bookingdates\",\r",
+							"                \"additionalneeds\"\r",
+							"            ],\r",
+							"            \"properties\": {\r",
+							"                \"firstname\": {\r",
+							"                    \"type\": \"string\",\r",
+							"                    \"default\": \"\",\r",
+							"                    \"title\": \"The firstname Schema\",\r",
+							"                    \"examples\": [\r",
+							"                        \"Jim\"\r",
+							"                    ]\r",
+							"                },\r",
+							"                \"lastname\": {\r",
+							"                    \"type\": \"string\",\r",
+							"                    \"default\": \"\",\r",
+							"                    \"title\": \"The lastname Schema\",\r",
+							"                    \"examples\": [\r",
+							"                        \"Brown\"\r",
+							"                    ]\r",
+							"                },\r",
+							"                \"totalprice\": {\r",
+							"                    \"type\": \"integer\",\r",
+							"                    \"default\": 0,\r",
+							"                    \"title\": \"The totalprice Schema\",\r",
+							"                    \"examples\": [\r",
+							"                        1213\r",
+							"                    ]\r",
+							"                },\r",
+							"                \"depositpaid\": {\r",
+							"                    \"type\": \"boolean\",\r",
+							"                    \"default\": false,\r",
+							"                    \"title\": \"The depositpaid Schema\",\r",
+							"                    \"examples\": [\r",
+							"                        true\r",
+							"                    ]\r",
+							"                },\r",
+							"                \"bookingdates\": {\r",
+							"                    \"type\": \"object\",\r",
+							"                    \"default\": {},\r",
+							"                    \"title\": \"The bookingdates Schema\",\r",
+							"                    \"required\": [\r",
+							"                        \"checkin\",\r",
+							"                        \"checkout\"\r",
+							"                    ],\r",
+							"                    \"properties\": {\r",
+							"                        \"checkin\": {\r",
+							"                            \"type\": \"string\",\r",
+							"                            \"default\": \"\",\r",
+							"                            \"title\": \"The checkin Schema\",\r",
+							"                            \"examples\": [\r",
+							"                                \"2018-01-01\"\r",
+							"                            ]\r",
+							"                        },\r",
+							"                        \"checkout\": {\r",
+							"                            \"type\": \"string\",\r",
+							"                            \"default\": \"\",\r",
+							"                            \"title\": \"The checkout Schema\",\r",
+							"                            \"examples\": [\r",
+							"                                \"2019-01-01\"\r",
+							"                            ]\r",
+							"                        }\r",
+							"                    },\r",
+							"                    \"examples\": [{\r",
+							"                        \"checkin\": \"2018-01-01\",\r",
+							"                        \"checkout\": \"2019-01-01\"\r",
+							"                    }]\r",
+							"                },\r",
+							"                \"additionalneeds\": {\r",
+							"                    \"type\": \"string\",\r",
+							"                    \"default\": \"\",\r",
+							"                    \"title\": \"The additionalneeds Schema\",\r",
+							"                    \"examples\": [\r",
+							"                        \"Breakfast\"\r",
+							"                    ]\r",
+							"                }\r",
+							"            },\r",
+							"            \"examples\": [{\r",
+							"                \"firstname\": \"Jim\",\r",
+							"                \"lastname\": \"Brown\",\r",
+							"                \"totalprice\": 1213,\r",
+							"                \"depositpaid\": true,\r",
+							"                \"bookingdates\": {\r",
+							"                    \"checkin\": \"2018-01-01\",\r",
+							"                    \"checkout\": \"2019-01-01\"\r",
+							"                },\r",
+							"                \"additionalneeds\": \"Breakfast\"\r",
+							"            }]\r",
+							"        }\r",
+							"    },\r",
+							"    \"examples\": [{\r",
+							"        \"bookingid\": 4793,\r",
+							"        \"booking\": {\r",
+							"            \"firstname\": \"Jim\",\r",
+							"            \"lastname\": \"Brown\",\r",
+							"            \"totalprice\": 1213,\r",
+							"            \"depositpaid\": true,\r",
+							"            \"bookingdates\": {\r",
+							"                \"checkin\": \"2018-01-01\",\r",
+							"                \"checkout\": \"2019-01-01\"\r",
+							"            },\r",
+							"            \"additionalneeds\": \"Breakfast\"\r",
+							"        }\r",
+							"    }]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Validate schema\", () => {\r",
+							"pm.response.to.have.jsonSchema(schema);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set('randomNumber', Math.floor(Math.random() * 2000));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : {{randomNumber}},\n    \"depositpaid\" : true,\n     \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}booking",
+					"host": [
+						"{{baseUrl}}booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createBookingWithInvalidPayload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check Response Status Code\", function () {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});\r",
+							"pm.test(\"Check Response Message\", function () {\r",
+							"    pm.response.to.have.body(\"Internal Server Error\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set('randomNumber', Math.floor(Math.random() * 2000));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : {{randomNumber}},\n    \"depositpaid\" : true,\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}booking",
+					"host": [
+						"{{baseUrl}}booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createBookingWithEmptyPayload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check Response Status Code\", function () {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});\r",
+							"pm.test(\"Check Response Message\", function () {\r",
+							"    pm.response.to.have.body(\"Internal Server Error\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set('randomNumber', Math.floor(Math.random() * 2000));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}booking",
+					"host": [
+						"{{baseUrl}}booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createBookingWithInvalidEndPoint",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check Response Status Code\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Check Response Message\", function () {\r",
+							"    pm.response.to.have.body(\"Not Found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstname\" : \"Jim\",\r\n    \"lastname\" : \"Brown\",\r\n    \"totalprice\" : {{randomNumber}},\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/bookingsss",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"bookingsss"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
