@@ -6,7 +6,7 @@ This repository contains the API Autoamtion Code
 * Newman Reporter
 * Node js
 
-## Prerequisite:
+## Prerequisites:
 * Install Node js
 * Install newman using below commands 1) npm install -g newman 2) npm install -g newman-reporter-html
 
